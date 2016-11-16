@@ -1,0 +1,57 @@
+<?php
+
+//
+// hook_schema
+//
+function badges_schema() {
+  $schema = array();
+  $schema['badge'] = array(
+    'description' => 'Badges that can be assigned to users.',
+    'fields' => array(
+      'bid' => array(
+        'description' => 'The primary identifier for a badge.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        // Tells the ctools that the field should not be exported to code
+        'no export' = TRUE,
+      ),
+
+      'name' => array(
+        'description' => 'The unique name of the badge.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+
+      'text' => array(
+        'description' => 'Text to display for the badge.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+
+      'color' => array(
+        'description' => 'Color to use when displaying the badge.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('bid'),
+    // Additional schema data for ctool exportables
+    'export' => array(
+      'key' => 'name',
+      'key name' => 'Badge Name',
+      'primary key' => 'bid',
+      'default hook' => 'badges_info',  // Function hook name.
+      'api' => array(
+        'owner' => 'badges',
+        'api' => 'badges',  // Base name for api include files.
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+  );
+
+  return $schema;
+}

@@ -1,0 +1,5 @@
+name = "Badges"
+description = "Badges for the users of the site"
+core = "7.x"
+package = "Custom"
+dependencies[] = "ctools"
