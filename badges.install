@@ -54,5 +54,24 @@ function badges_schema() {
     ),
   );
 
+  $schema['badge_user'] = array(
+    'description' => 'Map badges to users.',
+    'fields' => array(
+      'badge' => array(
+        'description' => 'Unique machine readable name of the badge.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'User id from {user}.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+  );
+
   return $schema;
 }

@@ -26,6 +26,20 @@ $plugin = array(
 );
 
 function badges_ctools_export_ui_form(&$form, $form_state){
-  dsm($form);
-  dsm($form_state);
+  $badge = $form_state['item'];
+
+  $form['text'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Badge Text',
+    '#default_value' => isset($badge->text) ? $badge->text : $badge->text,
+    '#required' => TRUE,
+  );
+  $form['color'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Badge Color',
+    '#description' => 'Badge Color in HEX',
+    '#field_prefix' => '#',
+    '#default_value' => isset($badge->color) ? $badge->color : $badge->color,
+    '#required' => TRUE,
+  );
 }

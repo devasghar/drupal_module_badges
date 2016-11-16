@@ -10,3 +10,86 @@ function badges_ctools_plugin_directory($module, $plugin) {
     return 'plugins/export_ui';
   }
 }
+
+//
+// hook_form_FORM_ID_alter
+//
+function badges_form_user_profile_form_alter(&$form, &$form_state, $form_id){
+  $account = $form['#user'];
+
+  $badges = badges_load_badges();
+  $badge_options = array();
+  foreach($badges as $badge){
+    $badge_options[$badge->name] = $badge->text;
+  }
+
+  $form['badges_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('User Badges'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+
+  dsm($account);
+
+  $form['badges_fieldset']['badge']= array(
+    '#type' => 'checkboxes',
+    '#options' => $badge_options,
+    '#title' => t("Select user's badges"),
+    '#default_value' => isset($account->badges) ? array_keys($account->badges) : array(),
+  );
+
+}
+
+function badges_load_badges(){
+  ctools_include('export');
+  $result = ctools_export_load_object('badge', 'all');
+  return $result;
+}
+
+//
+// hook_user_update
+//
+function badges_user_update(&$edit, $account, $category) {
+  if(isset($edit['badge'])){
+    // delete all exsisting badges
+    db_delete('badge_user')
+    ->condition('uid', $account->uid)
+    ->execute();
+
+    // Save new badges
+    $query = db_insert('badge_user')->fields(array('badge', 'uid'));
+    foreach ($edit['badge'] as $badge => $value) {
+      if($value !== 0){
+        $query->values(array('badge' => $badge, 'uid' => $account->uid));
+      }
+    }
+    $query->execute();
+  }
+}
+
+//
+// hook_user_load
+//
+function badges_user_load($users){
+  $result = db_query('SELECT * FROM {badge_user} WHERE uid IN (:uids)', array(':uids' => array_keys($users)));
+  $badges = badges_load_badges();
+
+  foreach($result as $record){
+    $users[$record->uid]->badges[$record->badge] = $badges[$record->badge];
+  }
+}
+
+
+//
+// hook_user_view
+//
+
+function badges_user_view($account, $view_mode, $langcode){
+  foreach($account->badges as $badge){
+    $account->content['badges'][$badge->name] = array(
+      '#type' => 'markup',
+      '#markup' => '<div class="badge" style="background-color:#' .check_plain($badge->color) .'">'. check_plain($badge->text) . '</div>',
+    );
+  }
+}
