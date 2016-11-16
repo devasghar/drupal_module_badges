@@ -3,10 +3,10 @@
 /**
  * hook_ctools_plugin_directory().
  */
-function badges_ctools_plugin_directory($module, $type) {
+function badges_ctools_plugin_directory($module, $plugin) {
 
   // Load the export_ui plugin.
-  if ($type =='export_ui') {
+  if ($plugin =='export_ui') {
     return 'plugins/export_ui';
   }
 }

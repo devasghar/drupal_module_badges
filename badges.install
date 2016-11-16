@@ -14,7 +14,7 @@ function badges_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
         // Tells the ctools that the field should not be exported to code
-        'no export' = TRUE,
+        'no export' => TRUE,
       ),
 
       'name' => array(
@@ -51,6 +51,7 @@ function badges_schema() {
         'minimum_version' => 1,
         'current_version' => 1,
       ),
+    ),
   );
 
   return $schema;
